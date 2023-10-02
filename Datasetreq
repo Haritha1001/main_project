@@ -1,0 +1,12 @@
+# DATASET USED 
+https://www.kaggle.com/c/fake-news
+https://www.kaggle.com/jruvika/fake-news-detection 
+https://www.kaggle.com/datasets/antonioskokiantonis/newscsv
+
+ABOUT DATASET CONTEXT
+The datasets we used in this study are open source and freely available online. data includes both fake and truthful news articles from multiple domains. The truthful news articles published contain true description of real world events, while the fake news websites contain claims that are not aligned with facts. The conformity of claims from the politics domain for many of those articles can be manually checked with fact checking websites such as politifact.com and snopes.com
+
+CONTENT
+
+The first dataset is called the “ISOT Fake News Dataset” (hereafter referred to as DS1) which contains both true and fake articles extracted from the World Wide Web. The true articles are extracted from reuters.com which is a renowned news website, while the fake articles were extracted from multiple sources, mostly websites which are flagged by politifact.com. The dataset contains a total of 44,898 articles, out of which 21,417 are truthful articles and 23,481 fake articles. The total corpora contain articles from different domains, but most prominently target political news. The second dataset is available at Kaggle [24] (hereafter referred to as DS2) which contains a total of 20,386 articles used for training and 5,126 articles used for testing. The dataset is built from multiple sources on the Internet. The articles are not limited to a single domain such as
+politics as they include both fake and true articles from various other domains. The third dataset is also available at Kaggle (hereafter referred to as DS3); it includes a total of 3,352 articles, both fake and true. The true articles are extracted from trusted online sources such as CNN, Reuters, the New York Times, and various others, while the fake news articles are extracted from untrusted news websites. The domains it covered include sports, entertainment, and politics. A combined dataset is the collection of articles from the three datasets (hereafter referred to as DS4). As the articles vary in nature in each dataset, the fourth dataset is created to evaluate the performance of algorithms on datasets which cover a wide array of domains in a single dataset. This dataset has a shape of 7796×4. The first column identifies the news, the second and third are the title and text, and the fourth column has labels denoting whether the news is REAL or FAKE.
