@@ -1,1 +1,83 @@
-##
+# Source_code
+#Import packages
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, accuracy_score, f1_score from sklearn.naive_bayes import MultinomialNB
+from sklearn.linear_model import PassiveAggressiveClassifier
+from sklearn.feature_extraction.text import TfidfTransformer, TfidfVectorizer from sklearn import svm
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier, VotingClassifier import pickle
+from wordcloud import WordCloud
+
+#Data collection
+df1 = pd.read_csv('/content/drive/MyDrive/news.csv') df1.head()
+df1.rename({"Unnamed: 0":"a"}, axis="columns", inplace=True) df1.drop(["a"], axis=1, inplace=True)
+df1.head()
+
+df1['titletext'] = df1.title + ' ' + df1.text df1.drop(['title','text'], axis=1, inplace=True) df1.head()
+df2 = pd.read_csv('/content/drive/MyDrive/True.csv')
+df2.head()
+df2.drop(['date','subject'], axis=1, inplace=True) df2['label'] = 'REAL'
+df2.head()
+df2['titletext'] = df2.title + ' ' + df2.text df2.drop(['title','text'], axis=1, inplace=True) df2.head()
+df3 = pd.read_csv('/content/drive/MyDrive/Fake.csv') df3.head()
+df3.drop(['date','subject'], axis=1, inplace=True) df3['label'] = 'FAKE'
+df3.head()
+df3['titletext'] = df3.title + ' ' + df3.text df3.drop(['title','text'], axis=1, inplace=True)
+df3.head() df1.isnull().sum()
+df2 = df2.dropna(how='any',axis=0) df2.isnull().sum()
+df3.isnull().sum()
+
+#train data
+news = pd.concat([df1,df2,df3])
+news.sample(10) news.shape
+X=news.titletext X.shape Y=news.label
+Y.shape x_train,x_test,y_train,y_test=train_test_split(X,Y,test_size=0.2,random_state=7)
+tfidf_vectorizer=TfidfVectorizer(stop_words='english', max_df=0.7) tfidf_train=tfidf_vectorizer.fit_transform(x_train) tfidf_test=tfidf_vectorizer.transform(x_test) PAC=PassiveAggressiveClassifier(max_iter=1000) PAC.fit(tfidf_train,y_train)
+y_pred=PAC.predict(tfidf_test) score=accuracy_score(y_test,y_pred) print(f'Accuracy: {round(score*100,2)}%')
+confusion_matrix(y_test,y_pred, labels=['FAKE','REAL']) MultNB = MultinomialNB()
+MultNB.fit(tfidf_train,y_train)
+MultNB_pred=MultNB.predict(tfidf_test) score1=accuracy_score(y_test,MultNB_pred)
+print(f'Multinomial Niave Bayyes Accuracy: {round(score1*100,2)}%') confusion_matrix(y_test,MultNB_pred, labels=['FAKE','REAL'])
+rfc=RandomForestClassifier(n_estimators= 10, random_state= 7) rfc.fit(tfidf_train,y_train)
+rfc_pred = rfc.predict(tfidf_test) score2=accuracy_score(y_test,rfc_pred)
+print(f'Random Forest Accuracy: {round(score2*100,2)}%') confusion_matrix(y_test,rfc_pred, labels=['FAKE','REAL'])
+try:
+filename = 'finalized_model.sav'
+loaded_model = pickle.load(open(filename, 'rb')) result = loaded_model.score(tfidf_test, y_test)
+print(f'Ensemble Learning Accuracy: {round(result*100,2)}%')
+except:
+Ensemb = VotingClassifier( estimators = [('PAC',PAC),('MultNB',MultNB),('rfc',rfc)], voting =	'hard')
+Ensemb.fit(tfidf_train,y_train)
+Ensemb_pred=Ensemb.predict(tfidf_test) filename = 'finalized_model.sav' pickle.dump(Ensemb, open(filename, 'wb')) score4=accuracy_score(y_test,Ensemb_pred)
+print(f'Ensemble Learning Accuracy: {round(score4*100,2)}%')
+
+# Web Application:
+
+from flask import Flask, render_template, request
+from sklearn.feature_extraction.text 
+import TfidfVectorizer from sklearn.linear_model 
+import PassiveAggressiveClassifier import pickle
+import pandas as pd
+from sklearn.model_selection import train_test_split
+app = Flask(_name_)
+tfvect = TfidfVectorizer(stop_words='english', max_df=0.7) loaded_model = pickle.load(open('model.pkl', 'rb')) 
+dataframe = pd.read_csv('news.csv')
+x = dataframe['text']
+y = dataframe['label']
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
+def fake_news_det(news):
+
+tfid_x_train = tfvect.fit_transform(x_train) tfid_x_test = tfvect.transform(x_test) input_data = [news]
+vectorized_input_data = tfvect.transform(input_data) prediction = loaded_model.predict(vectorized_input_data) return prediction
+@app.route('/') def home():
+return render_template('index.html')
+@app.route('/predict', methods=['POST']) def predict():
+if request.method == 'POST': message = request.form['message']
+
+pred = fake_news_det(message) print(pred)
+return render_template('index.html', prediction=pred) else:
+return render_template('index.html', prediction="Something went wrong")
+if _name_ == '_main_': app.run(debug=True)
