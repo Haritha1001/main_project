@@ -54,3 +54,8 @@ F1-Score:
 F1-score represents the trade-off between precision and recall. It calculates the harmonic mean between each of the two. Thus, it takes both the false positive and the false negative observations into account. F1- score can be calculated using the following formula:
 
 ![image](https://github.com/Haritha1001/main_project/assets/113330148/5a83a784-fc92-47c7-a359-5edd54539dbd)
+
+# DATASET USED
+https://www.kaggle.com/c/fake-news
+https://www.kaggle.com/jruvika/fake-news-detection
+https://www.kaggle.com/datasets/antonioskokiantonis/newscsv
